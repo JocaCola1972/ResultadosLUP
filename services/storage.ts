@@ -1,3 +1,4 @@
+
 import { User, MatchRecord, ShiftConfig, ShiftID } from '../types';
 
 const USERS_KEY = 'padel_users';
@@ -39,6 +40,11 @@ export const storage = {
   deleteRecord: (id: string) => {
     const records = storage.getRecords();
     const filtered = records.filter(r => r.id !== id);
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(filtered));
+  },
+  deleteRecordsByUser: (userId: string) => {
+    const records = storage.getRecords();
+    const filtered = records.filter(r => r.userId !== userId);
     localStorage.setItem(RECORDS_KEY, JSON.stringify(filtered));
   },
   getShiftConfigs: (): Record<string, number> => {

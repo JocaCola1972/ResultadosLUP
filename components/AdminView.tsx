@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { MatchRecord, ShiftID, ResultType, User } from '../types';
 import { storage } from '../services/storage';
@@ -13,6 +14,9 @@ export const AdminView: React.FC = () => {
   const [shiftConfigs, setShiftConfigs] = useState<Record<string, number>>(storage.getShiftConfigs());
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
+  // Deletion Modal State
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
   // Manual User Form State
   const [showAddUser, setShowAddUser] = useState(false);
   const [newUserName, setNewUserName] = useState('');
@@ -20,11 +24,11 @@ export const AdminView: React.FC = () => {
   const [newUserPass, setNewUserPass] = useState('');
 
   useEffect(() => {
-    setAllRecords(storage.getRecords());
-    setAllUsers(storage.getUsers());
+    refreshData();
   }, []);
 
-  const refreshUsers = () => {
+  const refreshData = () => {
+    setAllRecords(storage.getRecords());
     setAllUsers(storage.getUsers());
   };
 
@@ -69,14 +73,21 @@ export const AdminView: React.FC = () => {
   const handleApproveUser = (user: User) => {
     const updated = { ...user, isApproved: true };
     storage.updateUser(updated);
-    refreshUsers();
+    refreshData();
   };
 
-  const handleDeleteUser = (userId: string) => {
-    if (window.confirm("Tem a certeza que deseja apagar este jogador? Todos os seus registos permanecerão, mas o acesso será removido.")) {
-      storage.deleteUser(userId);
-      refreshUsers();
+  const executeDelete = (mode: 'access_only' | 'full_wipe') => {
+    if (!userToDelete) return;
+
+    if (mode === 'access_only') {
+      storage.deleteUser(userToDelete.id);
+    } else {
+      storage.deleteUser(userToDelete.id);
+      storage.deleteRecordsByUser(userToDelete.id);
     }
+
+    setUserToDelete(null);
+    refreshData();
   };
 
   const handleAddManualUser = (e: React.FormEvent) => {
@@ -97,11 +108,55 @@ export const AdminView: React.FC = () => {
     setNewUserPhone('');
     setNewUserPass('');
     setShowAddUser(false);
-    refreshUsers();
+    refreshData();
   };
 
   return (
     <div className="space-y-6">
+      {/* Deletion Modal Overlay */}
+      {userToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
+            <div className="p-8 text-center">
+              <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">Apagar Jogador</h3>
+              <p className="text-slate-500 text-sm mb-8">
+                Pretende remover <span className="font-bold text-slate-700">{userToDelete.name}</span>? Escolha como deseja proceder com os dados:
+              </p>
+              
+              <div className="space-y-3">
+                <button 
+                  onClick={() => executeDelete('access_only')}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl transition-all flex flex-col items-center"
+                >
+                  <span className="text-sm">Manter Dados (apagar apenas acesso)</span>
+                  <span className="text-[10px] opacity-60 font-medium">Os pontos e histórico de jogos permanecem no ranking.</span>
+                </button>
+                
+                <button 
+                  onClick={() => executeDelete('full_wipe')}
+                  className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-rose-100 transition-all flex flex-col items-center"
+                >
+                  <span className="text-sm">Eliminar Tudo (Limpeza Total)</span>
+                  <span className="text-[10px] opacity-80 font-medium">Remove o acesso e APAGA todos os pontos e histórico.</span>
+                </button>
+
+                <button 
+                  onClick={() => setUserToDelete(null)}
+                  className="w-full py-3 text-slate-400 font-bold text-sm hover:text-slate-600 transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 flex flex-wrap gap-2">
         <button 
           onClick={() => setActiveSubView('stats')}
@@ -242,7 +297,7 @@ export const AdminView: React.FC = () => {
                             </button>
                           )}
                           <button 
-                            onClick={() => handleDeleteUser(u.id)}
+                            onClick={() => setUserToDelete(u)}
                             className="text-rose-400 hover:text-rose-600 font-bold text-xs"
                           >
                             Remover
