@@ -96,22 +96,22 @@ export const AdminView: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap gap-3 glass-card p-2 rounded-2xl border border-teal-900/50">
+      <div className="flex flex-wrap gap-3 glass-card p-2 rounded-2xl border border-white/5">
         <button 
           onClick={() => setActiveSubView('stats')}
-          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'stats' ? 'bg-teal-500 text-teal-950 shadow-lg' : 'text-teal-400/60 hover:bg-teal-500/10'}`}
+          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'stats' ? 'bg-slate-100 text-slate-900 shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
         >
           Estatísticas
         </button>
         <button 
           onClick={() => setActiveSubView('users')}
-          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'users' ? 'bg-teal-500 text-teal-950 shadow-lg' : 'text-teal-400/60 hover:bg-teal-500/10'}`}
+          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'users' ? 'bg-slate-100 text-slate-900 shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
         >
           Jogadores
         </button>
         <button 
           onClick={() => setActiveSubView('configs')}
-          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'configs' ? 'bg-teal-500 text-teal-950 shadow-lg' : 'text-teal-400/60 hover:bg-teal-500/10'}`}
+          className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubView === 'configs' ? 'bg-slate-100 text-slate-900 shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
         >
           Config
         </button>
@@ -119,38 +119,38 @@ export const AdminView: React.FC = () => {
 
       {activeSubView === 'stats' && (
         <div className="space-y-6">
-          <div className="glass-card p-8 rounded-3xl border border-teal-900/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">Ranking Diário</h2>
-              <p className="text-xs text-teal-500/60 uppercase font-bold tracking-widest mt-1">Gestão de resultados e exportação</p>
+              <p className="text-xs text-slate-500 uppercase font-bold tracking-widest mt-1">Gestão e exportação</p>
             </div>
             <div className="flex flex-wrap items-center gap-4">
               <button 
                 onClick={handleExportExcel}
                 disabled={isExporting}
-                className={`bg-teal-500/10 text-teal-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-teal-500/30 hover:bg-teal-500/20 transition-all ${isExporting ? 'opacity-50' : ''}`}
+                className={`bg-white/5 text-slate-300 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all ${isExporting ? 'opacity-50' : ''}`}
               >
                 {isExporting ? 'A exportar...' : 'Exportar Global (.XLSX)'}
               </button>
-              <div className="bg-teal-950/50 px-5 py-2.5 rounded-2xl border border-teal-800 flex items-center space-x-3">
-                <span className="text-[10px] font-black text-teal-600 uppercase">Data</span>
+              <div className="bg-slate-950/50 px-5 py-2.5 rounded-2xl border border-slate-800 flex items-center space-x-3">
+                <span className="text-[10px] font-black text-slate-600 uppercase">Data</span>
                 <input 
                   type="date" value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
-                  className="bg-transparent text-sm font-bold text-teal-100 outline-none"
+                  className="bg-transparent text-sm font-bold text-slate-100 outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="glass-card rounded-3xl border border-teal-900/50 overflow-hidden">
+          <div className="glass-card rounded-3xl border border-slate-800 overflow-hidden">
             <div className="overflow-x-auto">
               {stats.length === 0 ? (
-                <div className="p-16 text-center text-teal-800 italic">Sem resultados registados para este dia.</div>
+                <div className="p-16 text-center text-slate-700 italic">Sem resultados registados para este dia.</div>
               ) : (
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-teal-950/40 text-teal-500/60 text-[10px] font-black uppercase tracking-widest border-b border-teal-900/50">
+                    <tr className="bg-slate-950/40 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-800">
                       <th className="py-5 px-8">Jogador</th>
                       <th className="py-5 px-2 text-center">V</th>
                       <th className="py-5 px-2 text-center">E</th>
@@ -158,14 +158,14 @@ export const AdminView: React.FC = () => {
                       <th className="py-5 px-8 text-right">Pts</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-teal-900/30">
+                  <tbody className="divide-y divide-slate-800/50">
                     {stats.map((s, idx) => (
-                      <tr key={idx} className="hover:bg-teal-500/5 transition-colors group">
-                        <td className="py-5 px-8 font-bold text-teal-100">{s.name}</td>
-                        <td className="py-5 px-2 text-center text-teal-400 font-black">{s.wins}</td>
+                      <tr key={idx} className="hover:bg-white/5 transition-colors group">
+                        <td className="py-5 px-8 font-bold text-slate-100">{s.name}</td>
+                        <td className="py-5 px-2 text-center text-emerald-500 font-black">{s.wins}</td>
                         <td className="py-5 px-2 text-center text-amber-500 font-black">{s.draws}</td>
                         <td className="py-5 px-2 text-center text-rose-500 font-black">{s.losses}</td>
-                        <td className="py-5 px-8 text-right font-black text-teal-400 text-xl">{s.totalPoints}</td>
+                        <td className="py-5 px-8 text-right font-black text-white text-xl">{s.totalPoints}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -175,8 +175,6 @@ export const AdminView: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Outras subviews seguindo o mesmo estilo */}
     </div>
   );
 };

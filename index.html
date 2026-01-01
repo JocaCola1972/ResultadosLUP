@@ -11,36 +11,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --petroleum-dark: #022c2c;
-            --petroleum-card: #064e4e;
-            --accent-teal: #2dd4bf;
+            /* Cores extraídas do logotipo */
+            --logo-blue: #8ea8cc; /* Azul da seta */
+            --logo-grey: #64748b; /* Cinza do texto */
+            --bg-bottom: #0f172a; /* Slate 950 / Deep Navy */
+            --bg-top: #cbd5e1;    /* Slate 200 / Light Grey-Blue */
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--petroleum-dark);
-            color: #f0fdfa;
-            /* Padel Net Pattern */
+            background: linear-gradient(0deg, var(--bg-bottom) 0%, var(--bg-top) 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+            /* Padel Net Pattern - subtilmente adaptado para as cores do logo */
             background-image: 
-                radial-gradient(circle at 2px 2px, rgba(45, 212, 191, 0.05) 1px, transparent 0);
-            background-size: 24px 24px;
+                linear-gradient(0deg, var(--bg-bottom) 0%, var(--bg-top) 100%),
+                radial-gradient(circle at 2px 2px, rgba(142, 168, 204, 0.15) 1px, transparent 0);
+            background-size: 100% 100%, 24px 24px;
         }
         .glass-card {
-            background: rgba(6, 78, 78, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(45, 212, 191, 0.1);
+            border: 1px solid rgba(142, 168, 204, 0.2);
         }
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--petroleum-dark);
+            background: var(--bg-bottom);
         }
         ::-webkit-scrollbar-thumb {
-            background: #134e4a;
+            background: var(--logo-blue);
             border-radius: 10px;
+            border: 2px solid var(--bg-bottom);
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-teal);
+            background: #b8c8d9;
         }
     </style>
 <script type="importmap">

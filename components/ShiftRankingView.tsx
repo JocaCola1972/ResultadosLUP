@@ -55,29 +55,34 @@ export const ShiftRankingView: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="glass-card p-8 rounded-3xl border border-teal-900/50">
+      <div className="glass-card p-8 rounded-[2rem] border border-[#8ea8cc]/10 shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">Classificações</h2>
-            <p className="text-xs text-teal-500/60 uppercase font-bold tracking-widest mt-1">Quadro de honra e rankings globais</p>
+          <div className="flex items-center space-x-5">
+            <div className="w-16 h-16 bg-white p-2 rounded-2xl shadow-lg border border-[#8ea8cc]/30">
+               <img src="logo.png" className="w-full h-full object-contain" alt="" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Classificações</h2>
+              <p className="text-[10px] text-[#8ea8cc] uppercase font-black tracking-[0.3em] mt-1">Quadro de honra e rankings globais</p>
+            </div>
           </div>
           
-          <div className="flex bg-teal-950/80 p-1.5 rounded-2xl border border-teal-900/50">
+          <div className="flex bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
             <button 
               onClick={() => setMode('shift')}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                mode === 'shift' ? 'bg-teal-500 text-teal-950 shadow-lg' : 'text-teal-500/50 hover:text-teal-300'
+              className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                mode === 'shift' ? 'bg-[#8ea8cc] text-slate-900 shadow-lg' : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              Turno
+              Diário
             </button>
             <button 
               onClick={() => setMode('global')}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                mode === 'global' ? 'bg-teal-500 text-teal-950 shadow-lg' : 'text-teal-500/50 hover:text-teal-300'
+              className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                mode === 'global' ? 'bg-[#8ea8cc] text-slate-900 shadow-lg' : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              Global
+              Hall of Fame
             </button>
           </div>
         </div>
@@ -86,70 +91,71 @@ export const ShiftRankingView: React.FC = () => {
       {mode === 'shift' ? (
         <>
           <div className="flex justify-center">
-            <div className="glass-card px-8 py-3 rounded-full border border-teal-900/50 flex items-center space-x-4">
-              <span className="text-[10px] font-black text-teal-500 uppercase">Consultar</span>
+            <div className="glass-card px-10 py-4 rounded-full border border-[#8ea8cc]/20 flex items-center space-x-6 shadow-xl">
+              <span className="text-[10px] font-black text-[#8ea8cc] uppercase tracking-widest">Filtrar Data</span>
               <input 
                 type="date" value={filterDate}
                 onChange={(e) => setFilterDate(e.target.value)}
-                className="bg-transparent text-sm font-bold text-teal-100 outline-none"
+                className="bg-transparent text-base font-black text-white outline-none cursor-pointer"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8">
+          <div className="grid grid-cols-1 gap-10">
             {SHIFTS.map((shift) => (
-              <div key={shift} className="glass-card rounded-3xl border border-teal-900/50 overflow-hidden">
-                <div className="p-6 border-b border-teal-900/50 bg-teal-950/30 flex justify-between items-center">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-2.5 bg-teal-500/10 text-teal-500 rounded-xl border border-teal-500/20">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div key={shift} className="glass-card rounded-[2.5rem] border border-[#8ea8cc]/10 overflow-hidden shadow-2xl">
+                <div className="p-7 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800/50 flex justify-between items-center">
+                  <div className="flex items-center space-x-5">
+                    <div className="p-3 bg-white/5 text-[#8ea8cc] rounded-2xl border border-[#8ea8cc]/20">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-black text-white text-sm uppercase italic tracking-wider">{shift}</h3>
+                      <h3 className="font-black text-white text-lg uppercase italic tracking-tighter">{shift}</h3>
+                      <p className="text-[9px] text-[#8ea8cc] font-bold uppercase tracking-widest">Batalha do Dia</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="overflow-x-auto">
                   {rankingsByShift[shift].length === 0 ? (
-                    <div className="p-16 text-center text-teal-800 italic text-xs font-medium uppercase tracking-widest">
-                      Sem batalhas registadas neste turno.
+                    <div className="p-20 text-center text-slate-600 italic text-xs font-black uppercase tracking-[0.3em]">
+                      Nenhum jogador entrou em campo neste turno.
                     </div>
                   ) : (
                     <table className="w-full text-left">
                       <thead>
-                        <tr className="bg-teal-950/20 text-teal-500/50 text-[10px] uppercase font-black tracking-widest border-b border-teal-900/30">
-                          <th className="py-5 px-8 w-20 text-center">#</th>
-                          <th className="py-5 px-2">Jogador</th>
-                          <th className="py-5 px-2 text-center">V</th>
-                          <th className="py-5 px-2 text-center">E</th>
-                          <th className="py-5 px-2 text-center">D</th>
-                          <th className="py-5 px-8 text-right">Pts</th>
+                        <tr className="bg-slate-950/30 text-[#8ea8cc]/50 text-[10px] uppercase font-black tracking-[0.2em] border-b border-slate-800">
+                          <th className="py-6 px-10 w-24 text-center">Pos</th>
+                          <th className="py-6 px-4">Lutador</th>
+                          <th className="py-6 px-4 text-center">V</th>
+                          <th className="py-6 px-4 text-center">E</th>
+                          <th className="py-6 px-4 text-center">D</th>
+                          <th className="py-6 px-10 text-right">Pontos</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-teal-900/30">
+                      <tbody className="divide-y divide-slate-800/40">
                         {rankingsByShift[shift].map((player, idx) => (
-                          <tr key={player.userId} className="hover:bg-teal-500/5 transition-all group">
-                            <td className="py-5 px-8 text-center">
-                              <span className={`inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black border transition-all group-hover:rotate-12 ${
-                                idx === 0 ? 'bg-amber-500/20 text-amber-500 border-amber-500/40' :
-                                idx === 1 ? 'bg-slate-400/20 text-slate-400 border-slate-400/40' :
-                                idx === 2 ? 'bg-orange-500/20 text-orange-500 border-orange-500/40' :
-                                'text-teal-800 border-teal-900'
+                          <tr key={player.userId} className={`hover:bg-white/5 transition-all group ${idx === 0 ? 'bg-white/[0.02]' : ''}`}>
+                            <td className="py-6 px-10 text-center">
+                              <span className={`inline-flex items-center justify-center w-10 h-10 rounded-2xl text-sm font-black border transition-all group-hover:rotate-6 ${
+                                idx === 0 ? 'bg-amber-400 text-slate-900 border-amber-300 shadow-lg shadow-amber-400/20' :
+                                idx === 1 ? 'bg-slate-300 text-slate-900 border-slate-200' :
+                                idx === 2 ? 'bg-orange-400 text-slate-900 border-orange-300' :
+                                'text-slate-400 border-slate-800'
                               }`}>
                                 {idx + 1}
                               </span>
                             </td>
-                            <td className="py-5 px-2">
-                              <div className="font-black text-teal-100 text-sm uppercase tracking-wide">{player.name}</div>
+                            <td className="py-6 px-4">
+                              <div className="font-black text-white text-base uppercase tracking-tight">{player.name}</div>
                             </td>
-                            <td className="py-5 px-2 text-center text-teal-400 font-black">{player.wins}</td>
-                            <td className="py-5 px-2 text-center text-amber-500 font-black">{player.draws}</td>
-                            <td className="py-5 px-2 text-center text-rose-500 font-black">{player.losses}</td>
-                            <td className="py-5 px-8 text-right">
-                              <span className="text-xl font-black text-teal-400">{player.points}</span>
+                            <td className="py-6 px-4 text-center text-emerald-400 font-black">{player.wins}</td>
+                            <td className="py-6 px-4 text-center text-[#8ea8cc] font-black">{player.draws}</td>
+                            <td className="py-6 px-4 text-center text-rose-500 font-black">{player.losses}</td>
+                            <td className="py-6 px-10 text-right">
+                              <span className={`text-2xl font-black ${idx === 0 ? 'text-amber-400' : 'text-[#8ea8cc]'}`}>{player.points}</span>
                             </td>
                           </tr>
                         ))}
@@ -162,66 +168,67 @@ export const ShiftRankingView: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="glass-card rounded-3xl border border-teal-900/50 overflow-hidden relative">
-          <div className="p-8 border-b border-teal-900/50 bg-gradient-to-r from-teal-950/80 to-teal-900/50 flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-teal-500 text-teal-950 rounded-2xl shadow-xl shadow-teal-500/20 transform -rotate-3">
-                <svg className="w-6 h-6 rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+        <div className="glass-card rounded-[2.5rem] border border-[#8ea8cc]/10 overflow-hidden relative shadow-2xl">
+          <div className="p-10 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800 flex justify-between items-center">
+            <div className="flex items-center space-x-6">
+              <div className="p-4 bg-white text-slate-950 rounded-3xl shadow-2xl transform -rotate-3 border-2 border-[#8ea8cc]/40">
+                <img src="logo.png" className="w-10 h-10 object-contain" alt="" />
               </div>
               <div>
-                <h3 className="font-black text-white text-lg italic uppercase tracking-tighter">Ranking Global Hall of Fame</h3>
-                <p className="text-[10px] text-teal-500/50 font-black uppercase tracking-[0.3em]">Todas as épocas</p>
+                <h3 className="font-black text-white text-2xl italic uppercase tracking-tighter">Hall of Fame Global</h3>
+                <p className="text-[10px] text-[#8ea8cc] font-black uppercase tracking-[0.4em] opacity-70">A elite do LevelUP Padel</p>
               </div>
             </div>
           </div>
 
           <div className="overflow-x-auto">
             {globalRanking.length === 0 ? (
-              <div className="p-16 text-center text-teal-800 italic uppercase font-black tracking-widest">
-                Ranking global indisponível.
+              <div className="p-24 text-center text-slate-700 italic uppercase font-black tracking-widest">
+                Sem lendas registadas no momento.
               </div>
             ) : (
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-teal-950/20 text-teal-500/40 text-[10px] uppercase font-black tracking-widest border-b border-teal-900/30">
-                    <th className="py-6 px-8 w-24 text-center">Posição</th>
-                    <th className="py-6 px-2">Lenda</th>
-                    <th className="py-6 px-2 text-center">Jogos</th>
-                    <th className="py-6 px-2 text-center">V</th>
-                    <th className="py-6 px-2 text-center">E</th>
-                    <th className="py-6 px-2 text-center">D</th>
-                    <th className="py-6 px-8 text-right">Total Pts</th>
+                  <tr className="bg-slate-950/30 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-800">
+                    <th className="py-7 px-10 w-28 text-center">Elite</th>
+                    <th className="py-7 px-4">Lenda</th>
+                    <th className="py-7 px-4 text-center">Jogos</th>
+                    <th className="py-7 px-4 text-center">V</th>
+                    <th className="py-7 px-4 text-center">E</th>
+                    <th className="py-7 px-4 text-center">D</th>
+                    <th className="py-7 px-10 text-right">Total Pts</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-teal-900/20">
+                <tbody className="divide-y divide-slate-800/30">
                   {globalRanking.map((player, idx) => (
-                    <tr key={player.userId} className={`transition-all ${idx < 3 ? 'bg-teal-500/5' : 'hover:bg-teal-500/5'}`}>
-                      <td className="py-6 px-8 text-center">
+                    <tr key={player.userId} className={`transition-all ${idx < 3 ? 'bg-white/[0.02]' : 'hover:bg-white/5'}`}>
+                      <td className="py-8 px-10 text-center">
                         <div className="flex justify-center">
                           {idx === 0 ? (
-                            <span className="text-3xl filter drop-shadow-md animate-bounce">👑</span>
+                            <div className="relative">
+                                <span className="text-4xl filter drop-shadow-lg animate-pulse">👑</span>
+                                <div className="absolute -bottom-2 -right-2 bg-amber-400 text-slate-900 text-[8px] font-black px-1.5 py-0.5 rounded-full">#1</div>
+                            </div>
                           ) : (
-                            <span className={`inline-flex items-center justify-center w-9 h-9 rounded-xl text-xs font-black border ${
-                              idx === 1 ? 'bg-slate-300/10 text-slate-300 border-slate-300/30' :
-                              idx === 2 ? 'bg-orange-500/10 text-orange-500 border-orange-500/30' :
-                              'text-teal-900 border-teal-950'
+                            <span className={`inline-flex items-center justify-center w-11 h-11 rounded-2xl text-xs font-black border-2 ${
+                              idx === 1 ? 'bg-slate-300/10 text-slate-200 border-slate-300/30 shadow-lg shadow-slate-300/5' :
+                              idx === 2 ? 'bg-orange-500/10 text-orange-400 border-orange-500/30 shadow-lg shadow-orange-500/5' :
+                              'text-slate-700 border-slate-900'
                             }`}>
                               {idx + 1}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-6 px-2">
-                        <div className="font-black text-white text-base uppercase italic tracking-wide">{player.name}</div>
+                      <td className="py-8 px-4">
+                        <div className="font-black text-white text-lg uppercase italic tracking-tighter">{player.name}</div>
                       </td>
-                      <td className="py-6 px-2 text-center font-bold text-teal-100/40">{player.totalGames}</td>
-                      <td className="py-6 px-2 text-center text-teal-400 font-black">{player.wins}</td>
-                      <td className="py-6 px-2 text-center text-amber-500 font-black">{player.draws}</td>
-                      <td className="py-6 px-2 text-center text-rose-500 font-black">{player.losses}</td>
-                      <td className="py-6 px-8 text-right">
-                        <span className="text-2xl font-black text-teal-400 bg-teal-500/10 px-4 py-2 rounded-2xl border border-teal-500/20">{player.points}</span>
+                      <td className="py-8 px-4 text-center font-bold text-slate-400">{player.totalGames}</td>
+                      <td className="py-8 px-4 text-center text-emerald-400 font-black">{player.wins}</td>
+                      <td className="py-8 px-4 text-center text-[#8ea8cc] font-black">{player.draws}</td>
+                      <td className="py-8 px-4 text-center text-rose-500 font-black">{player.losses}</td>
+                      <td className="py-8 px-10 text-right">
+                        <span className="text-3xl font-black text-white bg-white/5 px-6 py-3 rounded-[1.5rem] border border-[#8ea8cc]/30 shadow-xl shadow-black/20">{player.points}</span>
                       </td>
                     </tr>
                   ))}

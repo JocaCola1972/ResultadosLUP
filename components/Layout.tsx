@@ -13,24 +13,24 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onNavigate, currentView }) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-[#011f1f]/90 backdrop-blur-md text-white shadow-2xl sticky top-0 z-50 border-b border-teal-900/50">
+      <header className="bg-slate-900/95 backdrop-blur-md text-white shadow-2xl sticky top-0 z-50 border-b border-[#8ea8cc]/20">
         <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 flex items-center justify-center">
+            <div className="w-14 h-14 flex items-center justify-center bg-white rounded-2xl shadow-lg border border-[#8ea8cc]/30 p-1.5 transform -rotate-1">
               <img src="logo.png" alt="LevelUP Logo" className="max-w-full max-h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-black tracking-tighter uppercase italic text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-cyan-400 leading-none">
+              <h1 className="text-xl font-black tracking-tighter uppercase italic text-transparent bg-clip-text bg-gradient-to-r from-white to-[#8ea8cc] leading-none">
                 Padel
               </h1>
-              <span className="text-[10px] font-black text-teal-500 uppercase tracking-[0.2em] leading-none mt-1">Level UP</span>
+              <span className="text-[10px] font-black text-[#8ea8cc] uppercase tracking-[0.2em] leading-none mt-1">Level UP</span>
             </div>
           </div>
           
           {user && (
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-teal-400 text-[10px] font-bold uppercase tracking-widest leading-none">Jogador</span>
+                <span className="text-[#8ea8cc] text-[10px] font-bold uppercase tracking-widest leading-none">Jogador</span>
                 <span className="text-white text-sm font-bold">{user.name}</span>
               </div>
               <button 
@@ -46,11 +46,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onNavi
 
       <main className="flex-grow container mx-auto max-w-5xl px-4 py-8">
         {user && (
-          <div className="mb-8 flex flex-wrap gap-2 p-1.5 rounded-2xl glass-card">
+          <div className="mb-8 flex flex-wrap gap-2 p-1.5 rounded-2xl glass-card border border-[#8ea8cc]/10 shadow-xl">
             <button
               onClick={() => onNavigate('player')}
               className={`flex-1 min-w-[110px] py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                currentView === 'player' ? 'bg-teal-500 text-teal-950 shadow-lg shadow-teal-500/20' : 'text-teal-100/60 hover:bg-teal-500/10'
+                currentView === 'player' ? 'bg-[#8ea8cc] text-slate-900 shadow-lg shadow-[#8ea8cc]/20' : 'text-slate-300 hover:bg-white/5'
               }`}
             >
               Meu Registo
@@ -58,7 +58,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onNavi
             <button
               onClick={() => onNavigate('ranking')}
               className={`flex-1 min-w-[110px] py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                currentView === 'ranking' ? 'bg-teal-500 text-teal-950 shadow-lg shadow-teal-500/20' : 'text-teal-100/60 hover:bg-teal-500/10'
+                currentView === 'ranking' ? 'bg-[#8ea8cc] text-slate-900 shadow-lg shadow-[#8ea8cc]/20' : 'text-slate-300 hover:bg-white/5'
               }`}
             >
               Rankings
@@ -67,7 +67,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onNavi
               <button
                 onClick={() => onNavigate('admin')}
                 className={`flex-1 min-w-[110px] py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                  currentView === 'admin' ? 'bg-teal-500 text-teal-950 shadow-lg shadow-teal-500/20' : 'text-teal-100/60 hover:bg-teal-500/10'
+                  currentView === 'admin' ? 'bg-[#8ea8cc] text-slate-900 shadow-lg shadow-[#8ea8cc]/20' : 'text-slate-300 hover:bg-white/5'
                 }`}
               >
                 Admin
@@ -81,8 +81,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onNavi
       </main>
 
       <footer className="py-12 text-center">
-        <div className="w-12 h-1 bg-teal-500/20 mx-auto mb-6 rounded-full"></div>
-        <p className="text-teal-500/40 text-[10px] font-black uppercase tracking-[0.3em]">
+        <div className="w-16 h-1 bg-[#8ea8cc]/30 mx-auto mb-6 rounded-full"></div>
+        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] opacity-60">
           RESULTADOS LEVELUP &copy; 2025
         </p>
       </footer>
