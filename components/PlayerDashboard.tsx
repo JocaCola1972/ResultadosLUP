@@ -71,13 +71,6 @@ export const PlayerDashboard: React.FC<PlayerDashboardProps> = ({ user }) => {
     setCurrentResults(new Array(requiredGames).fill(null));
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Tem a certeza que deseja apagar este registo?")) {
-      storage.deleteRecord(id);
-      setRecords(records.filter(r => r.id !== id));
-    }
-  };
-
   const allFilled = currentResults.every(r => r !== null);
 
   return (
@@ -182,7 +175,6 @@ export const PlayerDashboard: React.FC<PlayerDashboardProps> = ({ user }) => {
                   <th className="py-3 px-2">Turno</th>
                   <th className="py-3 px-2">Resumo</th>
                   <th className="py-3 px-2 text-right">Pts</th>
-                  <th className="py-3 px-2 text-right">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -203,16 +195,6 @@ export const PlayerDashboard: React.FC<PlayerDashboardProps> = ({ user }) => {
                       </div>
                     </td>
                     <td className="py-3 px-2 text-right font-bold text-emerald-600">{r.points}</td>
-                    <td className="py-3 px-2 text-right">
-                      <button 
-                        onClick={() => handleDelete(r.id)}
-                        className="text-rose-400 hover:text-rose-600 p-1"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>

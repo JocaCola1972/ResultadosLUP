@@ -13,6 +13,7 @@ export const AdminView: React.FC = () => {
   const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
   const [shiftConfigs, setShiftConfigs] = useState<Record<string, number>>(storage.getShiftConfigs());
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [isExporting, setIsExporting] = useState(false);
 
   // Deletion Modal State
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -111,58 +112,79 @@ export const AdminView: React.FC = () => {
     refreshData();
   };
 
-  const handleExportCSV = () => {
-    // Prepare headers: Name, Phone, Shift 1, Shift 2, Shift 3, Total
-    const headers = ['Jogador', 'Telemovel', ...SHIFTS.map(s => `Pontos ${s}`), 'Total Acumulado'];
-    
-    // Group records by user
-    const userStatsMap: Record<string, { name: string, phone: string, shiftPoints: Record<string, number>, total: number }> = {};
-    
-    // Initialize users
-    allUsers.forEach(u => {
-      userStatsMap[u.id] = {
-        name: u.name,
-        phone: u.phone,
-        shiftPoints: SHIFTS.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}),
-        total: 0
-      };
-    });
+  const handleExportExcel = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
 
-    // Add legacy users or users not in allUsers but with records (if any)
-    allRecords.forEach(r => {
-      if (!userStatsMap[r.userId]) {
-        userStatsMap[r.userId] = {
-          name: r.userName,
-          phone: 'N/A',
-          shiftPoints: SHIFTS.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}),
-          total: 0
+    try {
+      // Import SheetJS dynamically
+      const XLSX = await import('https://esm.sh/xlsx');
+      const { utils, writeFile } = XLSX;
+      
+      // Prepare data structure
+      const userStatsMap: Record<string, any> = {};
+      
+      // 1. Initialize with all current users
+      allUsers.forEach(u => {
+        const entry: any = {
+          'Jogador': u.name,
+          'Telemóvel': u.phone,
         };
-      }
-      userStatsMap[r.userId].shiftPoints[r.shift] += r.points;
-      userStatsMap[r.userId].total += r.points;
-    });
+        // Initialize columns for each shift
+        SHIFTS.forEach(s => {
+          entry[`Pontos ${s}`] = 0;
+        });
+        entry['Total Acumulado'] = 0;
+        userStatsMap[u.id] = entry;
+      });
 
-    // Convert to CSV string (Excel uses ; as delimiter in some locales, but , is standard. \ufeff is for Excel UTF-8)
-    const csvContent = "\ufeff" + [
-      headers.join(';'),
-      ...Object.values(userStatsMap)
-        .sort((a, b) => b.total - a.total)
-        .map(u => [
-          u.name,
-          u.phone,
-          ...SHIFTS.map(s => u.shiftPoints[s]),
-          u.total
-        ].join(';'))
-    ].join('\n');
+      // 2. Aggregate points from all records (even if user was deleted but data kept)
+      allRecords.forEach(r => {
+        if (!userStatsMap[r.userId]) {
+          userStatsMap[r.userId] = {
+            'Jogador': r.userName + ' (Removido)',
+            'Telemóvel': 'N/A',
+          };
+          SHIFTS.forEach(s => {
+            userStatsMap[r.userId][`Pontos ${s}`] = 0;
+          });
+          userStatsMap[r.userId]['Total Acumulado'] = 0;
+        }
+        
+        userStatsMap[r.userId][`Pontos ${r.shift}`] += r.points;
+        userStatsMap[r.userId]['Total Acumulado'] += r.points;
+      });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Ranking_LevelUP_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      // Convert map to sorted array
+      const exportData = Object.values(userStatsMap).sort((a, b) => b['Total Acumulado'] - a['Total Acumulado']);
+      
+      // Create worksheet and workbook
+      const ws = utils.json_to_sheet(exportData);
+      
+      // Optional: adjust column widths (simple approach)
+      const wscols = [
+        { wch: 25 }, // Jogador
+        { wch: 15 }, // Telemovel
+        { wch: 20 }, // Shift 1
+        { wch: 20 }, // Shift 2
+        { wch: 20 }, // Shift 3
+        { wch: 15 }, // Total
+      ];
+      ws['!cols'] = wscols;
+
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, "Rankings LevelUP");
+      
+      // Save file
+      const dateStr = new Date().toISOString().split('T')[0];
+      writeFile(wb, `Ranking_LevelUP_Global_${dateStr}.xlsx`);
+      
+    } catch (err) {
+      console.error("Erro ao exportar Excel:", err);
+      alert("Ocorreu um erro ao gerar o ficheiro Excel. Verifique a sua ligação à internet.");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -244,11 +266,24 @@ export const AdminView: React.FC = () => {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <button 
-                onClick={handleExportCSV}
-                className="bg-emerald-50 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-emerald-100 transition-all border border-emerald-100 shadow-sm"
+                onClick={handleExportExcel}
+                disabled={isExporting}
+                className={`bg-emerald-50 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-emerald-100 transition-all border border-emerald-100 shadow-sm ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Exportar Rankings (.CSV/Excel)
+                {isExporting ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 mr-1 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    A Gerar...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Exportar Rankings (.XLSX)
+                  </>
+                )}
               </button>
               <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                 <span className="text-xs font-bold text-slate-400 uppercase">Ver dia:</span>
