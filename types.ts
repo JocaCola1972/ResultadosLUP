@@ -13,9 +13,10 @@ export enum ShiftID {
 export interface User {
   id: string;
   name: string;
-  phone: string; // Changed from email to phone
+  phone: string;
   password?: string;
   isAdmin: boolean;
+  isApproved: boolean; // New field for admin approval
 }
 
 export interface MatchRecord {

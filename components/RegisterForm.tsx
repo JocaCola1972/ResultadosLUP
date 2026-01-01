@@ -14,19 +14,21 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [adminCode, setAdminCode] = useState('');
   const [error, setError] = useState('');
+  const [pendingApproval, setPendingApproval] = useState(false);
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setPendingApproval(false);
 
     // Check Master Admin Login (JocaCola)
-    // We allow login via phone field using the master admin username
     if (!isRegistering && phone === MASTER_ADMIN.username && password === MASTER_ADMIN.password) {
       const adminUser: User = {
         id: 'master-admin',
         name: 'Administrador (JocaCola)',
         phone: 'master',
-        isAdmin: true
+        isAdmin: true,
+        isApproved: true
       };
       onLogin(adminUser);
       return;
@@ -50,20 +52,54 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onLogin }) => {
         name,
         phone,
         password,
-        isAdmin
+        isAdmin,
+        isApproved: isAdmin // Admins via code are auto-approved for simplicity
       };
       storage.saveUser(newUser);
-      onLogin(newUser);
+      
+      if (!newUser.isApproved) {
+        setPendingApproval(true);
+      } else {
+        onLogin(newUser);
+      }
     } else {
-      // Find user by phone number
       const user = users.find(u => u.phone === phone && u.password === password);
       if (user) {
-        onLogin(user);
+        if (!user.isApproved) {
+          setError('A sua conta ainda aguarda aprovação pelo administrador.');
+        } else {
+          onLogin(user);
+        }
       } else {
         setError('Credenciais inválidas. Verifique o telemóvel e password.');
       }
     }
   };
+
+  if (pendingApproval) {
+    return (
+      <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-100 text-center">
+        <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">Perfil Criado!</h2>
+        <p className="text-slate-600 mb-8">
+          O seu registo foi submetido com sucesso. Por favor, aguarde que um administrador aprove o seu acesso para poder entrar e registar resultados.
+        </p>
+        <button
+          onClick={() => {
+            setPendingApproval(false);
+            setIsRegistering(false);
+          }}
+          className="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition-all"
+        >
+          Voltar ao Login
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
