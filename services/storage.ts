@@ -47,6 +47,9 @@ export const storage = {
     const filtered = records.filter(r => r.userId !== userId);
     localStorage.setItem(RECORDS_KEY, JSON.stringify(filtered));
   },
+  clearAllRecords: () => {
+    localStorage.removeItem(RECORDS_KEY);
+  },
   getShiftConfigs: (): Record<string, number> => {
     const data = localStorage.getItem(SHIFT_CONFIGS_KEY);
     return data ? JSON.parse(data) : {};
