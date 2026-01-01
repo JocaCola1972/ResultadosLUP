@@ -111,6 +111,60 @@ export const AdminView: React.FC = () => {
     refreshData();
   };
 
+  const handleExportCSV = () => {
+    // Prepare headers: Name, Phone, Shift 1, Shift 2, Shift 3, Total
+    const headers = ['Jogador', 'Telemovel', ...SHIFTS.map(s => `Pontos ${s}`), 'Total Acumulado'];
+    
+    // Group records by user
+    const userStatsMap: Record<string, { name: string, phone: string, shiftPoints: Record<string, number>, total: number }> = {};
+    
+    // Initialize users
+    allUsers.forEach(u => {
+      userStatsMap[u.id] = {
+        name: u.name,
+        phone: u.phone,
+        shiftPoints: SHIFTS.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}),
+        total: 0
+      };
+    });
+
+    // Add legacy users or users not in allUsers but with records (if any)
+    allRecords.forEach(r => {
+      if (!userStatsMap[r.userId]) {
+        userStatsMap[r.userId] = {
+          name: r.userName,
+          phone: 'N/A',
+          shiftPoints: SHIFTS.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}),
+          total: 0
+        };
+      }
+      userStatsMap[r.userId].shiftPoints[r.shift] += r.points;
+      userStatsMap[r.userId].total += r.points;
+    });
+
+    // Convert to CSV string (Excel uses ; as delimiter in some locales, but , is standard. \ufeff is for Excel UTF-8)
+    const csvContent = "\ufeff" + [
+      headers.join(';'),
+      ...Object.values(userStatsMap)
+        .sort((a, b) => b.total - a.total)
+        .map(u => [
+          u.name,
+          u.phone,
+          ...SHIFTS.map(s => u.shiftPoints[s]),
+          u.total
+        ].join(';'))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Ranking_LevelUP_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       {/* Deletion Modal Overlay */}
@@ -183,19 +237,34 @@ export const AdminView: React.FC = () => {
 
       {activeSubView === 'stats' && (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-800">Ranking do Dia</h2>
-            <input 
-              type="date" 
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="px-4 py-2 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 text-sm font-bold text-emerald-600"
-            />
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-slate-800">Estatísticas</h2>
+              <p className="text-sm text-slate-500 italic">Visualize o ranking diário ou exporte todos os dados acumulados.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button 
+                onClick={handleExportCSV}
+                className="bg-emerald-50 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-emerald-100 transition-all border border-emerald-100 shadow-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Exportar Rankings (.CSV/Excel)
+              </button>
+              <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                <span className="text-xs font-bold text-slate-400 uppercase">Ver dia:</span>
+                <input 
+                  type="date" 
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className="bg-transparent text-sm font-bold text-emerald-600 outline-none"
+                />
+              </div>
+            </div>
           </div>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="overflow-x-auto">
               {stats.length === 0 ? (
-                <div className="p-12 text-center text-slate-400 italic">Nenhum registo encontrado.</div>
+                <div className="p-12 text-center text-slate-400 italic">Nenhum registo encontrado para este dia.</div>
               ) : (
                 <table className="w-full text-left">
                   <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest">
