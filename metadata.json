@@ -1,0 +1,5 @@
+{
+  "name": "Resultados LevelUP",
+  "description": "Uma aplicação completa para registo de resultados de padel, com suporte para múltiplos turnos, sistema de pontuação automático e painel de administrador para gestão de resultados diários.",
+  "requestFramePermissions": []
+}
