@@ -4,13 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados LevelUP</title>
+    <title>LevelUP Padel Score</title>
+    <!-- Favicon usando o logotipo -->
+    <link rel="icon" type="image/png" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --petroleum-dark: #022c2c;
+            --petroleum-card: #064e4e;
+            --accent-teal: #2dd4bf;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: var(--petroleum-dark);
+            color: #f0fdfa;
+            /* Padel Net Pattern */
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(45, 212, 191, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-card {
+            background: rgba(6, 78, 78, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 212, 191, 0.1);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--petroleum-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #134e4a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-teal);
         }
     </style>
 <script type="importmap">
